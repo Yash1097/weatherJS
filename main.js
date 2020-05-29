@@ -16,27 +16,32 @@ const api = {
   
   function getResults (query) {
     fetch('https://api.openweathermap.org/data/2.5/weather?q='+searchbox.value+'&appid=8743697ec77ad781c886e887e55d00d5')
-      .then(weather => {
-        return weather.json();
-      }).then(displayResults);
+      .then(response => response.json())
+  .then(data => displayResults(data));
+     /* .then(weather => {
+        //
+        if(weather.ok)
+            console.log(weather.json());
+        //return weather.json();
+      }).then(displayResults);*/
   }
   
-  function displayResults (weather) {
+  function displayResults (result) {
+      console.log(result);
     let city = document.querySelector('.location .city');
-    city.innerText = '${weather.name}, ${weather.sys.country}';
-  
+    city.innerHTML = result.name+'-'+result.sys.country ;
     let now = new Date();
     let date = document.querySelector('.location .date');
-    date.innerText = dateBuilder(now);
+    date.innerHTML = dateBuilder(now);
   
     let temp = document.querySelector('.current .temp');
-    temp.innerHTML = '${Math.round(weather.main.temp)}<span>°c</span>';
+    temp.innerHTML = (Math.round(result.main.temp)-273).toPrecision(2) + '<span>°c</span>';
   
     let weather_el = document.querySelector('.current .weather');
-    weather_el.innerText = weather.weather[0].main;
+    weather_el.innerHTML = result.weather[0].main;
   
     let hilow = document.querySelector('.hi-low');
-    hilow.innerText = '${Math.round(weather.main.temp_min)}°c / ${Math.round(weather.main.temp_max)}°c';
+    hilow.innerHTML = (Math.round(result.main.temp_min)-273).toPrecision(2)+'°c /'+ (Math.round(result.main.temp_max)-273).toPrecision(2)+'°c';
   }
   
   function dateBuilder (d) {
@@ -45,8 +50,8 @@ const api = {
   
     let day = days[d.getDay()];
     let date = d.getDate();
-    let month = months[d.getMonth()];
+    let month = months[d.getMonth()];   
     let year = d.getFullYear();
-  
-    return '${day} ${date} ${month} ${year}';
+    todaydate = day +', '+date+'/'+month+'/'+year;
+    return todaydate;
   }
